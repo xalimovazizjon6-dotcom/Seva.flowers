@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seva Flowers - Premium Gul Do'koni</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf7f2;
+            color: #2b2b2b;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+        input[type="text"], input[type="tel"], input[type="email"], textarea {
+            transition: all 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="tel"]:focus, input[type="email"]:focus, textarea:focus {
+            border-color: #e11d48;
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.1);
+        }
+        .flower-card {
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+        .flower-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 22px 40px -12px rgba(214, 158, 158, 0.3);
+        }
+        @keyframes softFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating-badge {
+            animation: softFloat 3.5s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4); }
+            70% { box-shadow: 0 0 0 14px rgba(225, 29, 72, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+        .pulse-btn {
+            animation: pulseGlow 2s infinite;
+        }
+        .tab-section {
+            display: none;
+        }
+        .tab-section.active {
+            display: block;
+            animation: fadeInSection 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-[#faf7f2] min-h-screen flex flex-col justify-between selection:bg-rose-200 selection:text-rose-900">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-rose-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchTab('dashboard')">
+                <div class="w-12 h-12 bg-gradient-to-tr from-rose-500 to-pink-400 rounded-2xl flex items-center justify-center text-white shadow-lg floating-badge group-hover:scale-105 transition">
+                    <i class="fa-solid fa-spa text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-bold tracking-wide text-rose-900 serif-heading">Seva Flowers</span>
+                    <p class="text-xs text-rose-500 uppercase tracking-widest font-semibold">Gul Do'koni</p>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-3 font-medium text-gray-700">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-4 py-2.5 rounded-full transition text-rose-600 bg-rose-50 font-semibold shadow-inner">
+                    <i class="fa-solid fa-chart-pie mr-2"></i>Asosiy
+                </button>
+                <button onclick="switchTab('catalog')" id="nav-catalog" class="px-4 py-2.5 rounded-full transition hover:text-rose-600 hover:bg-rose-50">
+                    <i class="fa-solid fa-store mr-2"></i>Gul Katalogi
+                </button>
+                <button onclick="switchTab('cart')" id="nav-cart" class="px-4 py-2.5 rounded-full transition hover:text-rose-600 hover:bg-rose-50 relative">
+                    <i class="fa-solid fa-basket-shopping mr-2"></i>Savatcha
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button onclick="switchTab('checkout')" id="nav-checkout" class="px-4 py-2.5 rounded-full transition hover:text-rose-600 hover:bg-rose-50">
+                    <i class="fa-solid fa-credit-card mr-2"></i>Buyurtma berish
+                </button>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="switchTab('cart')" class="md:hidden relative p-3 bg-rose-100 text-rose-700 rounded-full">
+                    <i class="fa-solid fa-basket-shopping text-lg"></i>
+                    <span id="cart-badge-mobile" class="absolute -top-1 -right-1 bg-rose-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+                <button id="mobile-menu-btn" class="md:hidden p-3 text-gray-700 hover:text-rose-600 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-rose-100 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-rose-700 bg-rose-50 font-semibold"><i class="fa-solid fa-chart-pie mr-2"></i>Asosiy</button>
+            <button onclick="switchTab('catalog'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-gray-700 hover:bg-rose-50"><i class="fa-solid fa-store mr-2"></i>Gul Katalogi</button>
+            <button onclick="switchTab('cart'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-gray-700 hover:bg-rose-50"><i class="fa-solid fa-basket-shopping mr-2"></i>Savatcha</button>
+            <button onclick="switchTab('checkout'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-gray-700 hover:bg-rose-50"><i class="fa-solid fa-credit-card mr-2"></i>Buyurtma berish</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- 1. DASHBOARD -->
+        <section id="tab-dashboard" class="tab-section active space-y-8">
+            <div class="relative bg-gradient-to-r from-rose-600 via-pink-500 to-amber-200 rounded-3xl p-8 sm:p-12 text-white shadow-xl overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-20 text-9xl">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <div class="max-w-2xl relative z-10">
+                    <span class="bg-white/20 text-white text-xs px-3.5 py-1.5 rounded-full uppercase tracking-widest font-semibold backdrop-blur-sm">Seva Flowers</span>
+                    <h1 class="text-3xl sm:text-5xl font-bold mt-3 mb-4 leading-tight serif-heading">Eng Chiroyli va Yangi Gullar Olami</h1>
+                    <p class="text-rose-50 text-base sm:text-lg mb-6 leading-relaxed">Sevikli insoningizga unutilmas taassurot ulashing. Istalgan turdagi eksklyuziv guldastalar va tezkor yetkazib berish.</p>
+                    <button onclick="switchTab('catalog')" class="bg-white text-rose-700 px-8 py-3.5 rounded-full font-bold shadow-lg hover:bg-rose-50 transition transform hover:scale-105 duration-200 pulse-btn">
+                        <i class="fa-solid fa-bag-shopping mr-2"></i>Gullarni Ko'rish
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bog'lanish bloki -->
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-rose-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 serif-heading mb-2">Biz bilan bog'lanish</h3>
+                    <p class="text-sm text-gray-600">Savollar yoki maxsus buyurtmalar uchun ijtimoiy tarmoqlarimizga yozing:</p>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://www.instagram.com/sevinch__rizayeva?utm_source=qr&psln=dHM1enFwcmJienYy" target="_blank" class="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white px-6 py-3.5 rounded-2xl font-bold shadow-md hover:opacity-95 transition flex items-center space-x-3">
+                        <i class="fa-brands fa-instagram text-xl"></i>
+                        <span>Instagram Profil</span>
+                    </a>
+                    <a href="https://t.me/Rizayeva_o5" target="_blank" class="bg-sky-500 text-white px-6 py-3.5 rounded-2xl font-bold shadow-md hover:bg-sky-600 transition flex items-center space-x-3">
+                        <i class="fa-brands fa-telegram text-xl"></i>
+                        <span>Telegram (@Rizayeva_o5)</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. KATALOG -->
+        <section id="tab-catalog" class="tab-section space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 serif-heading">Gul Mahsulotlari Katalogi</h2>
+                    <p class="text-sm text-gray-500 mt-1">O'zingizga yoqqan gulni tanlang va savatchaga qo'shing.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <i class="fa-solid fa-search"></i>
+                        </span>
+                        <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Gullarni qidirish..." class="pl-10 pr-4 py-2.5 bg-white border border-rose-200 rounded-full text-sm focus:outline-none w-full sm:w-64">
+                    </div>
+                    <div class="flex space-x-1 bg-white p-1 rounded-full border border-rose-200 shadow-sm">
+                        <button onclick="filterCategory('all')" id="cat-all" class="px-4 py-1.5 rounded-full text-xs font-semibold bg-rose-600 text-white transition">Barchasi</button>
+                        <button onclick="filterCategory('guldasta')" id="cat-guldasta" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-600 hover:bg-rose-50 transition">Guldastalar</button>
+                        <button onclick="filterCategory('quti')" id="cat-quti" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-600 hover:bg-rose-50 transition">Qutidagi gullar</button>
+                        <button onclick="filterCategory('savat')" id="cat-savat" class="px-4 py-1.5 rounded-full text-xs font-semibold text-gray-600 hover:bg-rose-50 transition">Savatdagi gullar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dinamik tarzda faqat tanlangan gullar chiqadi -->
+            </div>
+        </section>
+
+        <!-- 3. SAVATCHA -->
+        <section id="tab-cart" class="tab-section space-y-6">
+            <h2 class="text-3xl font-bold text-gray-900 serif-heading"><i class="fa-solid fa-basket-shopping mr-3 text-rose-500"></i>Sizning Savatchangiz</h2>
+            
+            <div id="cart-empty-state" class="bg-white rounded-3xl p-12 text-center border border-rose-100 shadow-sm hidden">
+                <div class="w-20 h-20 bg-rose-50 text-rose-400 rounded-full flex items-center justify-center mx-auto text-3xl mb-4">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Savatchangiz bo'sh</h3>
+                <p class="text-sm text-gray-500 mb-6">Katalogdan o'zingizga yoqqan gullarni tanlang.</p>
+                <button onclick="switchTab('catalog')" class="bg-rose-600 text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-rose-700 transition">Gullarni tanlash</button>
+            </div>
+
+            <div id="cart-filled-state" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-rose-100 p-6 overflow-hidden">
+                    <div class="flex items-center justify-between pb-4 border-b border-gray-100 font-semibold text-gray-400 text-xs uppercase tracking-wider">
+                        <span>Gul nomi</span>
+                        <span>Miqdor / Narx</span>
+                    </div>
+                    <div id="cart-items-container" class="divide-y divide-gray-100"></div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-rose-100 p-6 h-fit space-y-6">
+                    <h3 class="text-lg font-bold text-gray-800 border-b border-gray-100 pb-4">Buyurtma Xulosasi</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Gullar narxi:</span>
+                            <span id="cart-subtotal" class="font-semibold text-gray-800">0 so'm</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Yetkazib berish:</span>
+                            <span class="font-semibold text-emerald-600">Bepul</span>
+                        </div>
+                        <div class="border-t border-gray-100 pt-3 flex justify-between text-lg font-bold text-gray-900">
+                            <span>Umumiy summa:</span>
+                            <span id="cart-total" class="text-rose-600">0 so'm</span>
+                        </div>
+                    </div>
+                    <button onclick="switchTab('checkout')" class="w-full bg-rose-600 text-white py-3.5 rounded-xl font-bold shadow-md hover:bg-rose-700 transition flex items-center justify-center space-x-2">
+                        <span>Buyurtma berishga o'tish</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. BUYURTMA BERISH (CHECKOUT) -->
+        <section id="tab-checkout" class="tab-section space-y-6">
+            <h2 class="text-3xl font-bold text-gray-900 serif-heading"><i class="fa-solid fa-credit-card mr-3 text-rose-500"></i>Buyurtma Berish</h2>
+
+            <form id="checkout-form" onsubmit="submitOrder(event)" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-rose-100 p-6 sm:p-8 space-y-6">
+                    <h3 class="text-xl font-bold text-gray-800 border-b border-gray-100 pb-4">Qabul qiluvchi ma'lumotlari</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Ism va Familiya *</label>
+                            <input type="text" id="cust-name" required placeholder="Masalan: Sevinch Rizayeva" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Telefon Raqam *</label>
+                            <input type="tel" id="cust-phone" required placeholder="+998 90 123 45 67" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Yetkazib berish manzili *</label>
+                        <input type="text" id="cust-address" required placeholder="Tuman, ko'cha, uy raqami" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-500 mb-1">Ochiq xat uchun tabrik matni</label>
+                        <textarea id="cust-note" rows="3" placeholder="Guldastaga yoziladigan tilak..." class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none"></textarea>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-gray-800 border-b border-gray-100 pb-4 pt-4">To'lov Usuli</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <label class="flex items-center space-x-3 p-4 border border-rose-200 rounded-xl cursor-pointer hover:bg-rose-50/50 transition">
+                            <input type="radio" name="payment" value="karta" checked class="text-rose-600 focus:ring-rose-400">
+                            <div>
+                                <span class="block font-semibold text-sm text-gray-800">Plastik Karta</span>
+                                <span class="text-xs text-gray-500">Uzcard / Humo</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 border border-rose-200 rounded-xl cursor-pointer hover:bg-rose-50/50 transition">
+                            <input type="radio" name="payment" value="online" class="text-rose-600 focus:ring-rose-400">
+                            <div>
+                                <span class="block font-semibold text-sm text-gray-800">Click / Payme</span>
+                                <span class="text-xs text-gray-500">Onlayn to'lov</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 border border-rose-200 rounded-xl cursor-pointer hover:bg-rose-50/50 transition">
+                            <input type="radio" name="payment" value="naqd" class="text-rose-600 focus:ring-rose-400">
+                            <div>
+                                <span class="block font-semibold text-sm text-gray-800">Naqd Pul</span>
+                                <span class="text-xs text-gray-500">Kuryerga to'lash</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-rose-100 p-6 h-fit space-y-6">
+                    <h3 class="text-lg font-bold text-gray-800 border-b border-gray-100 pb-4">To'lov va Tasdiqlash</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Jami to'lov:</span>
+                            <span id="checkout-total" class="font-bold text-xl text-rose-600">0 so'm</span>
+                        </div>
+                        <p class="text-xs text-gray-500 leading-relaxed">Tugmani bosish orqali buyurtmangiz rasmiylashadi va operatorlarimiz tez orada siz bilan bog'lanadi.</p>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-pink-500 text-white py-4 rounded-xl font-bold shadow-lg hover:opacity-95 transition transform hover:scale-[1.02]">
+                        <i class="fa-solid fa-check-circle mr-2"></i>Buyurtmani Tasdiqlash
+                    </button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Modal Notification -->
+    <div id="custom-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4 shadow-2xl">
+            <div id="modal-icon" class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold text-gray-800 serif-heading">Muvaffaqiyatli!</h3>
+            <p id="modal-text" class="text-sm text-gray-600">Buyurtmangiz qabul qilindi.</p>
+            <button onclick="closeModal()" class="w-full bg-rose-600 text-white py-3 rounded-xl font-bold hover:bg-rose-700 transition">Tushunarli</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-rose-100 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 space-y-3">
+            <p class="font-semibold text-rose-800 serif-heading text-lg">Seva Flowers Gul Do'koni</p>
+            <div class="flex justify-center space-x-6 text-rose-600 font-medium pt-2">
+                <a href="https://www.instagram.com/sevinch__rizayeva?utm_source=qr&psln=dHM1enFwcmJienYy" target="_blank" class="hover:underline">Instagram</a>
+                <a href="https://t.me/Rizayeva_o5" target="_blank" class="hover:underline">Telegram</a>
+            </div>
+            <p class="text-xs text-gray-400 pt-2">&copy; 2026 Seva Flowers. Barcha huquqlar himoyalangan.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Tanlangan gullar ro'yxati (keraksiz ikkitasi olib tashlandi)
+        const products = [
+            { id: 1, name: "Nafis Oq Atirgullar Guldastasi", price: 480000, category: "guldasta", image: "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80", desc: "Xushbo'y va nafis oq atirgullar hamda liliyalar." },
+            { id: 2, name: "Atirgul va Peoniy Qutida", price: 580000, category: "quti", image: "https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?auto=format&fit=crop&w=600&q=80", desc: "Maxsus dizaynlashtirilgan qutidagi atirgul va peoniy to'plami." },
+            { id: 3, name: "Bahoriy Lolalar Savati", price: 390000, category: "savat", image: "https://images.unsplash.com/photo-1525310072745-f49212b5ac6d?auto=format&fit=crop&w=600&q=80", desc: "Rang-barang bahor lolalari nafis savatchada." },
+            { id: 4, name: "Nafis Atirgul Qutisi", price: 620000, category: "quti", image: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80", desc: "Maxsus qutiga terilgan fresh gullar jamlanmasi." }
+        ];
+
+        let cart = [];
+        let currentCategory = 'all';
+
+        window.onload = function() {
+            renderProducts(products);
+            updateCartUI();
+
+            document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            });
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            ['dashboard', 'catalog', 'cart', 'checkout'].forEach(id => {
+                const btn = document.getElementById('nav-' + id);
+                if(btn) {
+                    if(id === tabId) {
+                        btn.className = "px-4 py-2.5 rounded-full transition text-rose-600 bg-rose-50 font-semibold shadow-inner";
+                    } else {
+                        btn.className = "px-4 py-2.5 rounded-full transition hover:text-rose-600 hover:bg-rose-50";
+                    }
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function renderProducts(items) {
+            const grid = document.getElementById('product-grid');
+            if(items.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500">Hech qanday gul topilmadi.</div>`;
+                return;
+            }
+            grid.innerHTML = items.map(p => `
+                <div class="flower-card bg-white rounded-2xl overflow-hidden border border-rose-100 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <div class="h-52 overflow-hidden relative">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover transition duration-500 hover:scale-105" onerror="this.src='https://placehold.co/400x400/ffe4e6/9f1239?text=Seva+Flowers'">
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-rose-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">${p.category.toUpperCase()}</span>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-gray-800 mb-1 serif-heading">${p.name}</h3>
+                            <p class="text-xs text-gray-500 mb-4">${p.desc}</p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0 flex items-center justify-between">
+                        <span class="text-lg font-bold text-rose-600">${p.price.toLocaleString()} so'm</span>
+                        <button onclick="addToCart(${p.id})" class="bg-rose-600 text-white text-sm px-4 py-2.5 rounded-xl font-semibold hover:bg-rose-700 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Savatchaga</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            ['all', 'guldasta', 'quti', 'savat'].forEach(c => {
+                const btn = document.getElementById('cat-' + c);
+                if(c === cat) {
+                    btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold bg-rose-600 text-white transition";
+                } else {
+                    btn.className = "px-4 py-1.5 rounded-full text-xs font-semibold text-gray-600 hover:bg-rose-50 transition";
+                }
+            });
+            applyFilters();
+        }
+
+        function filterProducts() {
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            let filtered = products.filter(p => {
+                const matchesCat = currentCategory === 'all' || p.category === currentCategory;
+                const matchesQuery = p.name.toLowerCase().includes(query) || p.desc.toLowerCase().includes(query);
+                return matchesCat && matchesQuery;
+            });
+            renderProducts(filtered);
+        }
+
+        function addToCart(id) {
+            const prod = products.find(p => p.id === id);
+            const exist = cart.find(item => item.id === id);
+            if(exist) {
+                exist.qty++;
+            } else {
+                cart.push({ ...prod, qty: 1 });
+            }
+            updateCartUI();
+            showMessage(`"${prod.name}" savatchaga qo'shildi!`, "Muvaffaqiyatli", "success");
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if(item) {
+                item.qty += delta;
+                if(item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cart-badge').innerText = totalCount;
+            document.getElementById('cart-badge-mobile').innerText = totalCount;
+
+            const emptyState = document.getElementById('cart-empty-state');
+            const filledState = document.getElementById('cart-filled-state');
+            const container = document.getElementById('cart-items-container');
+
+            if(cart.length === 0) {
+                emptyState.classList.remove('hidden');
+                filledState.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                filledState.classList.remove('hidden');
+
+                container.innerHTML = cart.map(item => `
+                    <div class="py-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-xl border border-gray-100">
+                            <div>
+                                <h4 class="font-bold text-gray-800 text-sm serif-heading">${item.name}</h4>
+                                <span class="text-xs text-rose-600 font-semibold">${item.price.toLocaleString()} so'm</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                                <button onclick="changeQty(${item.id}, -1)" class="px-3 py-1 text-gray-600 hover:bg-gray-200 transition">-</button>
+                                <span class="px-3 text-sm font-semibold">${item.qty}</span>
+                                <button onclick="changeQty(${item.id}, 1)" class="px-3 py-1 text-gray-600 hover:bg-gray-200 transition">+</button>
+                            </div>
+                            <button onclick="changeQty(${item.id}, -${item.qty})" class="text-gray-400 hover:text-rose-600 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            document.getElementById('cart-subtotal').innerText = subtotal.toLocaleString() + " so'm";
+            document.getElementById('cart-total').innerText = subtotal.toLocaleString() + " so'm";
+            document.getElementById('checkout-total').innerText = subtotal.toLocaleString() + " so'm";
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            if(cart.length === 0) {
+                showMessage("Savatchangiz bo'sh. Avval gul tanlang!", "Diqqat", "warning");
+                return;
+            }
+            const name = document.getElementById('cust-name').value;
+            const address = document.getElementById('cust-address').value;
+            
+            showMessage(`Hurmatli ${name}, buyurtmangiz muvaffaqiyatli qabul qilindi! ${address} manziliga yetkazib berish boshlandi.`, "Buyurtma Tasdiqlandi", "success");
+            cart = [];
+            updateCartUI();
+            document.getElementById('checkout-form').reset();
+            switchTab('dashboard');
+        }
+
+        function showMessage(text, title = "Muvaffaqiyatli", type = "success") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-text').innerText = text;
+            const icon = document.getElementById('modal-icon');
+            
+            if(type === "success") {
+                icon.className = "w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl";
+                icon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                icon.className = "w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-3xl";
+                icon.innerHTML = '<i class="fa-solid fa-bell"></i>';
+            }
+
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
